@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no"/>
+  <meta name="theme-color" content="#C23135"/>
+  <title>七十周年，归队｜电子科技大学70周年校庆高水平运动员校友返校邀请</title>
+  <style>
+    /* ===== DESIGN TOKENS (UESTC 70th Anniversary VIS) ===== */
+    :root{
+      --uestc-red:#C23135;       /* 官方庆典红 */
+      --uestc-red-deep:#8B1A1E;  /* 深红 */
+      --uestc-red-light:#E85D60; /* 浅红 */
+      --gold:#D2A36A;            /* 校庆金（建筑/文字） */
+      --gold-accent:#E0891F;     /* 强调金（70内弧） */
+      --gold-pale:#F5E6C8;      /* 浅金 */
+      --paper:#FDF8F0;          /* 宣纸白 */
+      --paper-warm:#F7EDE0;     /* 暖纸 */
+      --ink:#2C1810;            /* 墨色 */
+      --ink-light:#6B5B54;      /* 浅墨 */
+      --shadow:0 12px 48px rgba(50,20,18,.14);
+      --radius:20px;
+    }
+
+    /* ===== RESET ===== */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{
+      font-family:"PingFang SC","Microsoft YaHei","Noto Serif CJK SC","STSong","SimSun",serif;
+      background:#1a0a0c;color:var(--ink);overflow:hidden;
+      -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;
+    }
+    body{width:100vw;height:100vh;overflow:hidden;position:relative}
+    a{text-decoration:none;color:inherit}
+    button{font:inherit;border:none;background:none;cursor:pointer}
+
+    /* ===== FLIPBOOK CONTAINER ===== */
+    .flipbook{
+      width:100%;height:100%;position:relative;
+      perspective:1800px;perspective-origin:center center;
+    }
+
+    /* ===== SINGLE PAGE ===== */
+    .page{
+      position:absolute;inset:0;
+      display:flex;align-items:center;justify-content:center;
+      transform-origin:center bottom;
+      transition:transform 0.7s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.5s ease;
+      backface-visibility:hidden;
+      overflow:hidden;
+      -webkit-overflow-scrolling:touch;
+      opacity:0;visibility:hidden;
+    }
+    .page.active{
+      transform:rotateX(0deg);opacity:1;visibility:visible;z-index:2;
+      pointer-events:auto;transition-delay:0s;
+    }
+    .page.flipped{
+      transform:rotateX(90deg);opacity:0;z-index:1;
+      pointer-events:none;visibility:hidden;transition-delay:0s;
+    }
+    .page.next{
+      transform:rotateX(-90deg);opacity:0;z-index:0;
+      pointer-events:none;visibility:hidden;transition-delay:0s;
+    }
+    .page.behind{
+      transform:rotateX(0deg);opacity:1;visibility:visible;z-index:1;
+      pointer-events:none;transition-delay:0s;
+    }
+
+    /* page fold shadow */
+    .page::after{
+      content:'';position:absolute;left:0;right:0;bottom:0;
+      height:40%;
+      background:linear-gradient(to top,rgba(80,30,20,.12),transparent);
+      pointer-events:none;opacity:0;transition:opacity .6s;
+    }
+    .page.active::after{opacity:1}
+
+    /* ===== PAGE BACKGROUNDS ===== */
+    .bg-paper{
+      background:
+        url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E"),
+        linear-gradient(175deg,#FDF8F0 0%,#F7EDE0 40%,#FDF8F0 100%);
+    }
+    .bg-red{
+      background:
+        radial-gradient(circle at 30% 20%,rgba(210,163,106,.12),transparent 40%),
+        radial-gradient(circle at 75% 85%,rgba(255,255,255,.06),transparent 35%),
+        linear-gradient(160deg,var(--uestc-red) 0%,#8B1A1E 65%,#5C1015 100%);
+      color:#fff;
+    }
+    .bg-dark{
+      background:
+        radial-gradient(circle at 20% 15%,rgba(210,163,106,.08),transparent 30%),
+        radial-gradient(circle at 80% 85%,rgba(194,49,53,.15),transparent 35%),
+        linear-gradient(155deg,#2A0E12 0%,#1A080A 50%,#0F0507 100%);
+      color:#fff;
+    }
+    .bg-gold{
+      background:
+        radial-gradient(circle at 50% 30%,rgba(255,255,255,.25),transparent 50%),
+        linear-gradient(165deg,#F5E6C8 0%,#E8D4A8 35%,#D2A36A 100%);
+      color:var(--ink);
+    }
+
+    /* ===== ORNAMENTAL BORDER ===== */
+    .ornament{
+      position:absolute;inset:0;pointer-events:none;z-index:3;
+    }
+    .ornament::before,.ornament::after{
+      content:'';position:absolute;
+    }
+    /* top & bottom gold lines */
+    .ornament::before{
+      left:3%;right:3%;top:3%;bottom:3%;
+      border:1px solid currentColor;border-radius:4px;
+      opacity:.18;
+    }
+    /* corner flourishes */
+    .ornament::after{
+      left:2.5%;right:2.5%;top:2.5%;bottom:2.5%;
+      border:1px solid currentColor;border-radius:2px;
+      opacity:.10;
+    }
+    .dark-orn .ornament::before,
+    .dark-orn .ornament::after{border-color:var(--gold)}
+    .paper-orn .ornament::before,
+    .paper-orn .ornament::after{border-color:var(--uestc-red)}
+
+    /* corner decorations */
+    .corner{
+      position:absolute;width:36px;height:36px;z-index:4;pointer-events:none;
+    }
+    .corner svg{width:100%;height:100%}
+    .corner-tl{top:4.5%;left:6%}
+    .corner-tr{top:4.5%;right:6%;transform:scaleX(-1);left:auto}
+    .corner-bl{bottom:4.5%;left:6%;transform:scaleY(-1);top:auto}
+    .corner-br{bottom:4.5%;right:6%;transform:scale(-1,-1);top:auto;left:auto}
+
+    /* ===== CONTENT WRAPPER ===== */
+    .content{
+      position:relative;z-index:5;
+      width:min(82%,580px);margin:auto;
+      padding:clamp(40px,8vh,80px) 0;
+      text-align:center;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    .kicker{
+      font-family:"Helvetica Neue",Arial,sans-serif;
+      font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+      color:var(--gold);font-weight:600;margin-bottom:16px;
+    }
+    .paper .kicker,.bg-paper .kicker{color:var(--uestc-red)}
+    .bg-gold .kicker{color:var(--uestc-red-deep)}
+
+    .title-cn{
+      font-family:"STKaiti","KaiTi","Noto Serif CJK SC","Songti SC","SimSun",serif;
+      font-size:clamp(28px,7.5vw,58px);line-height:1.25;font-weight:700;
+      letter-spacing:.04em;
+    }
+    .bg-paper .title-cn,.bg-gold .title-cn{color:var(--uestc-red)}
+    .bg-red .title-cn,.bg-dark .title-cn{color:#fff}
+
+    .subtitle{
+      margin-top:16px;font-size:clamp(13px,3.2vw,19px);line-height:1.8;
+      font-weight:400;
+    }
+    .bg-paper .subtitle{color:var(--ink-light)}
+    .bg-red .subtitle,.bg-dark .subtitle{color:rgba(255,255,255,.82)}
+
+    .lead{
+      margin-top:24px;font-size:clamp(14px,3.2vw,20px);line-height:1.9;
+    }
+    .bg-paper .lead{color:var(--ink)}
+    .bg-red .lead,.bg-dark .lead{color:rgba(255,255,255,.88)}
+
+    .em{font-weight:800}
+    .bg-paper .em{color:var(--uestc-red)}
+    .bg-red .em,.bg-dark .em{color:var(--gold-pale)}
+    .bg-gold .em{color:var(--uestc-red-deep)}
+
+    .quote{
+      margin:28px auto 0;max-width:80%;
+      font-family:"STKaiti","KaiTi","Noto Serif CJK SC","Songti SC",serif;
+      font-size:clamp(18px,4.8vw,34px);line-height:1.55;
+      border-left:3px solid var(--gold);padding-left:18px;text-align:left;
+    }
+    .bg-paper .quote{color:var(--uestc-red);border-color:var(--gold)}
+    .bg-red .quote,.bg-dark .quote{color:#fff;border-color:var(--gold)}
+    .bg-gold .quote{color:var(--uestc-red-deep);border-color:var(--uestc-red)}
+
+    /* ===== LOGO ===== */
+    .logo-wrap{
+      margin:0 auto 24px;
+      width:clamp(160px,45vw,280px);
+    }
+    .logo-wrap img{
+      width:100%;height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,.15));
+    }
+    .logo-wrap.invert img{filter:brightness(0) invert(1) drop-shadow(0 6px 20px rgba(0,0,0,.2))}
+
+    /* ===== SEAL ===== */
+    .seal{
+      width:90px;height:90px;border:2px solid var(--gold);border-radius:50%;
+      margin:0 auto 28px;display:grid;place-items:center;
+      font-family:Georgia,serif;font-size:13px;letter-spacing:.1em;
+      color:var(--gold);position:relative;
+    }
+    .seal::before{
+      content:'';position:absolute;inset:6px;border:1px solid currentColor;
+      border-radius:50%;opacity:.35;
+    }
+    .seal b{font-size:28px;line-height:1;display:block;font-family:Georgia,serif}
+
+    /* ===== TIMELINE CARDS ===== */
+    .timeline{margin-top:28px;display:grid;gap:16px}
+    .event{
+      border-radius:var(--radius);padding:22px 20px;text-align:left;
+      backdrop-filter:blur(12px);
+    }
+    .bg-paper .event{
+      background:rgba(255,255,255,.65);
+      border:1px solid rgba(194,49,53,.10);box-shadow:var(--shadow);
+    }
+    .bg-red .event{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .bg-dark .event{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .event .time{
+      font-family:"Helvetica Neue",Arial,sans-serif;
+      font-size:11px;letter-spacing:.22em;font-weight:700;
+    }
+    .bg-paper .event .time{color:var(--uestc-red)}
+    .bg-red .event .time,.bg-dark .event .time{color:var(--gold)}
+    .event h3{margin-top:6px;font-size:clamp(17px,4vw,24px);line-height:1.35}
+    .event p{margin-top:8px;font-size:14px;line-height:1.8;opacity:.78}
+
+    /* ===== SPORTS GRID ===== */
+    .sports{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px;
+    }
+    .sport{
+      min-height:130px;border-radius:var(--radius);padding:20px;
+      display:flex;flex-direction:column;justify-content:space-between;text-align:left;
+      overflow:hidden;position:relative;
+    }
+    .bg-red .sport{
+      background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .bg-dark .sport{
+      background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .sport .icon{font-size:28px}
+    .sport .icon svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+    .sport strong{font-size:17px;display:block;margin-top:6px;line-height:1.3}
+    .sport small{
+      display:block;margin-top:4px;
+      font-family:"Helvetica Neue",Arial,sans-serif;
+      font-size:10px;letter-spacing:.15em;opacity:.5;
+    }
+
+    /* ===== PHOTO GRID ===== */
+    .photo-grid{
+      margin-top:24px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+    }
+    .photo{
+      position:relative;aspect-ratio:4/5;border-radius:18px;overflow:hidden;
+    }
+    .photo-placeholder{
+      position:absolute;inset:0;display:grid;place-items:center;
+      color:rgba(255,255,255,.5);font-size:12px;letter-spacing:.1em;
+    }
+    .photo .cap{
+      position:absolute;left:14px;right:14px;bottom:12px;
+      color:#fff;font-size:12px;line-height:1.5;
+    }
+    .photo .cap b{display:block;font-size:16px}
+
+    /* photo background variations */
+    .photo-1{background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.6)),linear-gradient(135deg,#80534d,#302424)}
+    .photo-2{background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.6)),linear-gradient(135deg,#6e7d81,#29383c)}
+    .photo-3{background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.6)),linear-gradient(135deg,#7b6151,#2e211d)}
+    .photo-4{background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.6)),linear-gradient(135deg,#575e73,#262b3c)}
+
+    /* ===== RSVP CARD ===== */
+    .rsvp-card{
+      margin-top:28px;padding:28px 22px;border-radius:24px;
+      background:rgba(255,255,255,.7);border:1px solid rgba(194,49,53,.10);
+      box-shadow:var(--shadow);text-align:center;
+      backdrop-filter:blur(10px);
+    }
+    .rsvp-card p{color:var(--ink-light);line-height:1.8;font-size:14px}
+
+    /* ===== BUTTONS ===== */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      min-height:50px;padding:0 32px;border-radius:999px;
+      font-weight:700;font-size:15px;letter-spacing:.06em;
+      transition:all .3s ease;cursor:pointer;
+    }
+    .btn-primary{
+      background:var(--uestc-red);color:#fff;
+      box-shadow:0 12px 32px rgba(194,49,53,.30);
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(194,49,53,.40)}
+    .btn-ghost{
+      border:1px solid rgba(210,163,106,.5);
+      background:rgba(255,255,255,.06);backdrop-filter:blur(10px);
+      color:var(--gold);
+    }
+    .bg-paper .btn-ghost{
+      border-color:rgba(194,49,53,.3);color:var(--uestc-red);
+      background:rgba(194,49,53,.04);
+    }
+    .btn-ghost:hover{transform:translateY(-2px);background:rgba(255,255,255,.12)}
+    .btn-white{
+      background:#fff;color:var(--uestc-red);
+      box-shadow:0 12px 32px rgba(0,0,0,.15);
+    }
+    .btn-white:hover{transform:translateY(-2px)}
+
+    /* ===== DATE BADGE ===== */
+    .date-badge{
+      display:inline-flex;align-items:center;gap:12px;
+      margin-top:20px;padding:12px 28px;
+      border:1px solid currentColor;border-radius:999px;
+      font-size:clamp(14px,3.5vw,17px);letter-spacing:.12em;
+      opacity:.75;
+    }
+
+    /* ===== PAGE NUMBER ===== */
+    .page-num{
+      position:absolute;bottom:clamp(16px,3vh,28px);left:50%;
+      transform:translateX(-50%);
+      font-family:"Helvetica Neue",Arial,sans-serif;
+      font-size:10px;letter-spacing:.3em;opacity:.35;
+      z-index:6;
+    }
+
+    /* ===== SCROLL / SWIPE HINT ===== */
+    .swipe-hint{
+      position:absolute;
+      bottom:clamp(28px,5vh,48px);left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      z-index:6;
+    }
+    .swipe-hint .arrow{
+      width:20px;height:20px;
+      border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+      transform:rotate(-45deg);opacity:.4;
+      animation:swipe-bounce 2s infinite;
+    }
+    .swipe-hint span{
+      font-family:"Helvetica Neue",Arial,sans-serif;
+      font-size:10px;letter-spacing:.2em;opacity:.4;
+    }
+    @keyframes swipe-bounce{
+      0%,100%{transform:rotate(-45deg) translateY(0);opacity:.3}
+      50%{transform:rotate(-45deg) translateY(5px);opacity:.7}
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress{
+      position:fixed;top:0;left:0;height:3px;z-index:100;
+      background:linear-gradient(90deg,var(--gold-accent),var(--gold));
+      transition:width .5s ease;
+      box-shadow:0 0 12px rgba(210,163,106,.5);
+    }
+
+    /* ===== PAGE INDICATOR DOTS ===== */
+    .dots{
+      position:fixed;right:12px;top:50%;transform:translateY(-50%);
+      display:flex;flex-direction:column;gap:8px;z-index:100;
+    }
+    .dot{
+      width:6px;height:6px;border-radius:50%;
+      background:rgba(255,255,255,.25);transition:all .4s ease;cursor:pointer;
+    }
+    .dot.active{
+      background:var(--gold);transform:scale(1.5);
+      box-shadow:0 0 8px rgba(210,163,106,.6);
+    }
+
+    /* ===== FADE IN ANIMATION ===== */
+    .fade-up{
+      opacity:0;transform:translateY(30px);
+      transition:opacity .8s ease,transform .8s ease;
+    }
+    .fade-up.show{opacity:1;transform:translateY(0)}
+    .fade-up.delay-1{transition-delay:.15s}
+    .fade-up.delay-2{transition-delay:.3s}
+    .fade-up.delay-3{transition-delay:.45s}
+    .fade-up.delay-4{transition-delay:.6s}
+
+    /* ===== RESPONSIVE ===== */
+    @media(min-width:800px){
+      .sports{grid-template-columns:repeat(4,1fr)}
+      .photo-grid{grid-template-columns:repeat(4,1fr)}
+      .content{width:min(70%,520px);padding:clamp(60px,10vh,120px) 0}
+    }
+    @media(max-height:600px){
+      .content{padding:20px 0}
+      .seal{width:60px;height:60px;margin-bottom:16px}
+      .seal b{font-size:20px}
+    }
+
+    /* ===== DECORATIVE DIVIDER ===== */
+    .divider{
+      display:flex;align-items:center;justify-content:center;gap:12px;
+      margin:24px 0;opacity:.3;
+    }
+    .divider::before,.divider::after{
+      content:'';flex:1;max-width:60px;height:1px;background:currentColor;
+    }
+    .divider span{
+      font-size:10px;display:inline-block;width:6px;height:6px;
+      background:currentColor;border-radius:50%;opacity:.5;
+    }
+
+    /* ===== RSVP TIMELINE ===== */
+    .rsvp-timeline{
+      display:flex;flex-direction:column;align-items:center;
+      gap:0;position:relative;padding:8px 0;
+    }
+    .tl-item{
+      display:flex;flex-direction:column;align-items:center;
+      position:relative;width:100%;
+    }
+    .tl-dot{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--uestc-red);
+      position:relative;z-index:2;flex-shrink:0;
+    }
+    .tl-line{
+      width:1.5px;flex:1;min-height:24px;
+      background:linear-gradient(var(--uestc-red),rgba(194,49,53,.25));
+    }
+    .tl-item:last-child .tl-line{display:none}
+    .tl-text{
+      font-size:14px;line-height:1.7;color:var(--ink);
+      text-align:center;padding:4px 0 8px;
+    }
+    .tl-text strong{
+      color:var(--uestc-red);font-weight:700;letter-spacing:.02em;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="dots" id="dots"></div>
+
+  <div class="flipbook" id="flipbook">
+
+    <!-- ==================== PAGE 1: COVER ==================== -->
+    <section class="page bg-dark dark-orn active" data-page="0">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
+      <div class="content">
+        <div class="logo-wrap invert fade-up">
+          <img src="logos/红色-横.png" alt="电子科技大学70周年校庆"/>
+        </div>
+        <div class="seal fade-up delay-1" style="color:var(--gold);border-color:var(--gold)">
+          <div>UESTC<br><b>70</b></div>
+        </div>
+        <h1 class="title-cn fade-up delay-2" style="font-size:clamp(48px,12vw,88px);line-height:1.05">
+          七十周年<br>归队
+        </h1>
+        <p class="subtitle fade-up delay-3">电子科技大学70周年校庆<br>高水平运动员校友返校邀请</p>
+        <div class="date-badge fade-up delay-4">
+          <span>2026.09.18 — 09.19</span>
+        </div>
+        <div style="margin-top:32px;font-size:12px;letter-spacing:.15em;opacity:.35;color:var(--gold)">
+          向上滑动翻页
+        </div>
+      </div>
+      <div class="page-num">01 / 08</div>
+    </section>
+
+    <!-- ==================== PAGE 2: INVITATION LETTER ==================== -->
+    <section class="page bg-paper paper-orn" data-page="1">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="content">
+        <div class="kicker fade-up">TO OUR TEAMMATES</div>
+        <h2 class="title-cn fade-up delay-1" style="font-size:clamp(24px,6.5vw,48px)">致曾经并肩作战的你</h2>
+        <div class="divider fade-up delay-1"><span></span></div>
+        <div class="lead fade-up delay-2">
+          还记得一起训练的清晨和夜晚吗？<br>
+          还记得那件代表成电出战的队服吗？<br>
+          还记得泳池、球场、跑道上，<br>
+          那些一起拼过、赢过、输过、笑过的队友吗？
+        </div>
+        <div class="lead fade-up delay-3" style="margin-top:20px">
+          2026年，电子科技大学迎来建校<span class="em">70周年</span>。<br>
+          这一次，我们想邀请你重新回到成电。
+        </div>
+        <div class="quote fade-up delay-4">
+          再见一次老队友，<br>
+          再回一次熟悉的赛场。<br>
+          <span class="em">七十周年，欢迎归队。</span>
+        </div>
+      </div>
+      <div class="page-num">02 / 08</div>
+    </section>
+
+    <!-- ==================== PAGE 3: SEPT 18 EVENING ==================== -->
+    <section class="page bg-paper paper-orn" data-page="2">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="content">
+        <div class="kicker fade-up">SEPTEMBER 18 · EVENING</div>
+        <h2 class="title-cn fade-up delay-1">09.18 · 重逢</h2>
+        <div class="divider fade-up delay-1"><span></span></div>
+        <div class="timeline">
+          <article class="event fade-up delay-2">
+            <div class="time">9月18日 · 晚上</div>
+            <h3>老队友见面夜</h3>
+            <p>由各项目、各届校友自行组织聚会。没有比赛任务，没有正式流程，就是和多年未见的老队友吃顿饭、聊聊天，再讲讲当年的故事。</p>
+          </article>
+        </div>
+        <div class="quote fade-up delay-3">
+          有些名字很多年没叫过，<br>
+          见面时却还是那么熟悉。
+        </div>
+      </div>
+      <div class="page-num">03 / 08</div>
+    </section>
+
+    <!-- ==================== PAGE 4: SEPT 19 MORNING ==================== -->
+    <section class="page bg-red dark-orn" data-page="3">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="content">
+        <div class="kicker fade-up">SEPTEMBER 19 · MORNING</div>
+        <h2 class="title-cn fade-up delay-1">09.19 · 归队</h2>
+        <div class="divider fade-up delay-1"><span></span></div>
+        <div class="timeline">
+          <article class="event fade-up delay-2">
+            <div class="time">9月19日 · 上午</div>
+            <h3>70周年校庆田径运动会开幕式</h3>
+            <p>历届高水平运动员、校运动队校友共同组成高水平运动员校友代表队，参加运动会开幕式及校友入场式。穿上队服，再次和队友们列队入场。</p>
+          </article>
+        </div>
+        <div class="quote fade-up delay-3">
+          多年以后，<br>
+          我们再次站在同一支队伍里。
+        </div>
+      </div>
+      <div class="page-num">04 / 08</div>
+    </section>
+
+    <!-- ==================== PAGE 5: SEPT 19 AFTERNOON SPORTS ==================== -->
+    <section class="page bg-dark dark-orn" data-page="4">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="content">
+        <div class="kicker fade-up">SEPTEMBER 19 · AFTERNOON</div>
+        <h2 class="title-cn fade-up delay-1">再战一次</h2>
+        <div class="divider fade-up delay-1"><span></span></div>
+        <p class="lead fade-up delay-2">9月19日下午，各项目代表队举行校友友谊赛。<br><br>成绩已经不是最重要的事，重要的是<br><span class="em">和老队友再上一次场</span>。</p>
+        <div class="sports fade-up delay-3">
+          <div class="sport">
+            <div class="icon"><svg viewBox="0 0 24 24"><path d="M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M7 12l3-4 3 2 4-6"/><circle cx="17" cy="4" r="2"/></svg></div>
+            <div><strong>游泳</strong><small>SWIMMING</small></div>
+          </div>
+          <div class="sport">
+            <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2l3 7h-6l3-7zM2.5 9.5l7 2-4.5 5.5zM21.5 9.5l-7 2 4.5 5.5zM5.5 20l2.5-6h8l2.5 6z"/></svg></div>
+            <div><strong>足球</strong><small>FOOTBALL</small></div>
+          </div>
+          <div class="sport">
+            <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/><path d="M4.93 4.93c4.08 2.52 4.08 11.62 0 14.14M19.07 4.93c-4.08 2.52-4.08 11.62 0 14.14"/></svg></div>
+            <div><strong>篮球</strong><small>BASKETBALL</small></div>
+          </div>
+          <div class="sport">
+            <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M18 3c-4 4-4 14 0 18"/><path d="M6 3c4 4 4 14 0 18"/><path d="M2 7h20M2 17h20"/></svg></div>
+            <div><strong>网球</strong><small>TENNIS</small></div>
+          </div>
+        </div>
+        <div class="quote fade-up delay-4" style="text-align:center;border:none;font-family:Georgia,serif;letter-spacing:.15em;font-size:clamp(16px,4vw,22px)">
+          BACK TO THE GAME
+        </div>
+      </div>
+      <div class="page-num">05 / 08</div>
+    </section>
+
+    <!-- ==================== PAGE 6: MEMORIES ==================== -->
+    <section class="page bg-red dark-orn" data-page="5">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="content">
+        <div class="kicker fade-up">MEMORIES</div>
+        <h2 class="title-cn fade-up delay-1">那些年，我们一起为成电而战</h2>
+        <div class="divider fade-up delay-1"><span></span></div>
+        <p class="subtitle fade-up delay-2" style="opacity:.7;font-size:14px">这里可以替换成历届校队合影、比赛、领奖和训练照片</p>
+        <div class="photo-grid fade-up delay-3">
+          <div class="photo photo-1"><div class="photo-placeholder">老照片占位</div><div class="cap"><b>2006</b>校队旧照</div></div>
+          <div class="photo photo-2"><div class="photo-placeholder">老照片占位</div><div class="cap"><b>2012</b>训练的日子</div></div>
+          <div class="photo photo-3"><div class="photo-placeholder">老照片占位</div><div class="cap"><b>2018</b>代表成电站上赛场</div></div>
+          <div class="photo photo-4"><div class="photo-placeholder">老照片占位</div><div class="cap"><b>2022</b>队伍还在继续</div></div>
+        </div>
+        <div class="quote fade-up delay-4">照片会褪色，<br>队友不会。</div>
+      </div>
+      <div class="page-num">06 / 08</div>
+    </section>
+
+    <!-- ==================== PAGE 7: RSVP ==================== -->
+    <section class="page bg-paper paper-orn" data-page="6">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--uestc-red)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--uestc-red)" opacity=".15"/></svg></div>
+      <div class="content">
+        <div class="kicker fade-up">RSVP · 报名登记</div>
+        <h2 class="title-cn fade-up delay-1">七十周年，等你归队</h2>
+        <div class="divider fade-up delay-1"><span></span></div>
+        <p class="lead fade-up delay-2" style="font-size:16px;line-height:1.9">如果你计划返校，请填写校友返校信息登记。<br>报名信息统一通过飞书问卷收集。</p>
+        <div class="rsvp-card fade-up delay-3">
+          <p style="margin-bottom:16px">点击下方按钮填写飞书问卷，登记以下信息：</p>
+          <div class="rsvp-timeline">
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-line"></div>
+              <div class="tl-text"><strong>9月18日</strong><br>晚间聚会是否参加</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-line"></div>
+              <div class="tl-text"><strong>9月19日 上午</strong><br>开幕式校友入场式</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-text"><strong>9月19日 下午</strong><br>友谊赛参赛项目</div>
+            </div>
+          </div>
+          <p style="opacity:.55;font-size:12px;margin-top:12px">（游泳 / 足球 / 篮球 / 网球，可多选）</p>
+          <a class="btn btn-primary" id="feishuBtn" href="#" target="_blank" rel="noopener" style="margin-top:24px">
+            确认归队 →
+          </a>
+          <p style="margin-top:14px;font-size:11px;opacity:.45">报名截止日期：2026年9月10日</p>
+        </div>
+      </div>
+      <div class="page-num">07 / 08</div>
+    </section>
+
+    <!-- ==================== PAGE 8: CLOSING ==================== -->
+    <section class="page bg-dark dark-orn" data-page="7">
+      <div class="ornament"></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="var(--gold)" stroke-width="1" fill="none" opacity=".25"/><circle cx="6" cy="6" r="2" fill="var(--gold)" opacity=".15"/></svg></div>
+      <!-- big watermark -->
+      <div style="position:absolute;right:-8px;bottom:8vh;font-family:Georgia,serif;font-size:clamp(100px,30vw,200px);line-height:.75;color:rgba(255,255,255,.05);font-weight:700;user-select:none;z-index:1;pointer-events:none">70</div>
+      <div class="content">
+        <div class="kicker fade-up" style="color:var(--gold)">UESTC · 1956—2026</div>
+        <h2 class="title-cn fade-up delay-1">我们毕业了，但从未真正离队。</h2>
+        <div class="divider fade-up delay-1" style="color:var(--gold)"><span></span></div>
+        <div class="quote fade-up delay-2" style="text-align:center;border:none;font-size:clamp(28px,7vw,44px)">
+          七十周年，归队。
+        </div>
+        <p class="lead fade-up delay-3" style="margin-top:20px;font-size:17px;opacity:.8">
+          2026年9月18日—19日<br>电子科技大学见。
+        </p>
+        <a class="btn btn-ghost fade-up delay-4" href="#" onclick="goToPage(0);return false" style="margin-top:28px">
+          返回封面 ↑
+        </a>
+        <p style="margin-top:32px;font-size:11px;letter-spacing:.2em;opacity:.3;color:var(--gold);z-index:6;position:relative">
+          电子科技大学70周年校庆 · 高水平运动员校友返校邀请
+        </p>
+      </div>
+      <div class="page-num">08 / 08</div>
+    </section>
+
+  </div>
+
+  <script>
+    // ===== CONFIG =====
+    const FEISHU_FORM_URL = "https://meit108.feishu.cn/share/base/form/shrcnLtTpijeDaZKCMMCXZgJZHb";
+
+    // ===== STATE =====
+    const pages = document.querySelectorAll('.page');
+    const totalPages = pages.length;
+    let currentPage = 0;
+    let isAnimating = false;
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    // ===== INIT =====
+    function init() {
+      // Set up feishu link
+      const btn = document.getElementById('feishuBtn');
+      btn.href = FEISHU_FORM_URL;
+      // feishu link ready
+
+      // Build dots
+      const dotsContainer = document.getElementById('dots');
+      for (let i = 0; i < totalPages; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToPage(i));
+        dotsContainer.appendChild(dot);
+      }
+
+      // Initial animations
+      updateAnimations();
+
+      // Event listeners
+      document.addEventListener('wheel', handleWheel, { passive: false });
+      document.addEventListener('touchstart', handleTouchStart, { passive: true });
+      document.addEventListener('touchend', handleTouchEnd, { passive: true });
+      document.addEventListener('keydown', handleKeydown);
+    }
+
+    // ===== PAGE NAVIGATION =====
+    function goToPage(index) {
+      if (isAnimating || index === currentPage || index < 0 || index >= totalPages) return;
+      isAnimating = true;
+
+      const direction = index > currentPage ? 'next' : 'prev';
+
+      // Update page classes
+      pages.forEach((page, i) => {
+        page.classList.remove('active', 'flipped', 'next', 'behind');
+        if (i === index) {
+          page.classList.add('active');
+        } else if (i < index) {
+          page.classList.add('flipped');
+        } else {
+          page.classList.add('next');
+        }
+      });
+
+      currentPage = index;
+      updateProgress();
+      updateDots();
+
+      // Trigger fade-in animations after transition
+      setTimeout(() => {
+        updateAnimations();
+        isAnimating = false;
+      }, 600);
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages - 1) goToPage(currentPage + 1);
+    }
+
+    function prevPage() {
+      if (currentPage > 0) goToPage(currentPage - 1);
+    }
+
+    // ===== UPDATE UI =====
+    function updateProgress() {
+      const progress = document.getElementById('progress');
+      const pct = totalPages > 1 ? (currentPage / (totalPages - 1)) * 100 : 0;
+      progress.style.width = ((currentPage / (totalPages - 1)) * 100) + '%';
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentPage);
+      });
+    }
+
+    function updateAnimations() {
+      const activePage = pages[currentPage];
+      const fadeEls = activePage.querySelectorAll('.fade-up');
+      fadeEls.forEach(el => el.classList.add('show'));
+    }
+
+    // ===== EVENT HANDLERS =====
+    function handleWheel(e) {
+      e.preventDefault();
+      if (isAnimating) return;
+      if (e.deltaY > 30) nextPage();
+      else if (e.deltaY < -30) prevPage();
+    }
+
+    function handleTouchStart(e) {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    }
+
+    function handleTouchEnd(e) {
+      if (isAnimating) return;
+      const touchEndY = e.changedTouches[0].clientY;
+      const touchEndX = e.changedTouches[0].clientX;
+      const diffY = touchStartY - touchEndY;
+      const diffX = Math.abs(touchStartX - touchEndX);
+
+      // Only handle vertical swipes (not horizontal)
+      if (Math.abs(diffY) > 50 && diffX < Math.abs(diffY)) {
+        if (diffY > 0) nextPage();
+        else prevPage();
+      }
+    }
+
+    function handleKeydown(e) {
+      if (isAnimating) return;
+      switch (e.key) {
+        case 'ArrowDown':
+        case 'ArrowRight':
+        case ' ':
+        case 'PageDown':
+          e.preventDefault();
+          nextPage();
+          break;
+        case 'ArrowUp':
+        case 'ArrowLeft':
+        case 'PageUp':
+          e.preventDefault();
+          prevPage();
+          break;
+        case 'Home':
+          e.preventDefault();
+          goToPage(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          goToPage(totalPages - 1);
+          break;
+      }
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
