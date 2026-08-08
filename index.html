@@ -113,15 +113,15 @@
     }
     /* top & bottom gold lines */
     .ornament::before{
-      left:3%;right:3%;top:3%;bottom:3%;
-      border:1px solid currentColor;border-radius:4px;
-      opacity:.18;
+      left:4%;right:4%;top:3.5%;bottom:3.5%;
+      border:1px solid currentColor;border-radius:6px;
+      opacity:.15;
     }
     /* corner flourishes */
     .ornament::after{
-      left:2.5%;right:2.5%;top:2.5%;bottom:2.5%;
-      border:1px solid currentColor;border-radius:2px;
-      opacity:.10;
+      left:3.5%;right:3.5%;top:2.8%;bottom:2.8%;
+      border:1px dashed currentColor;border-radius:4px;
+      opacity:.08;
     }
     .dark-orn .ornament::before,
     .dark-orn .ornament::after{border-color:var(--gold)}
@@ -130,13 +130,13 @@
 
     /* corner decorations */
     .corner{
-      position:absolute;width:36px;height:36px;z-index:4;pointer-events:none;
+      position:absolute;width:44px;height:44px;z-index:4;pointer-events:none;
     }
     .corner svg{width:100%;height:100%}
-    .corner-tl{top:4.5%;left:6%}
-    .corner-tr{top:4.5%;right:6%;transform:scaleX(-1);left:auto}
-    .corner-bl{bottom:4.5%;left:6%;transform:scaleY(-1);top:auto}
-    .corner-br{bottom:4.5%;right:6%;transform:scale(-1,-1);top:auto;left:auto}
+    .corner-tl{top:3.8%;left:5.2%}
+    .corner-tr{top:3.8%;right:5.2%;transform:scaleX(-1);left:auto}
+    .corner-bl{bottom:3.8%;left:5.2%;transform:scaleY(-1);top:auto}
+    .corner-br{bottom:3.8%;right:5.2%;transform:scale(-1,-1);top:auto;left:auto}
 
     /* ===== CONTENT WRAPPER ===== */
     .content{
@@ -415,14 +415,47 @@
     /* ===== DECORATIVE DIVIDER ===== */
     .divider{
       display:flex;align-items:center;justify-content:center;gap:12px;
-      margin:24px 0;opacity:.3;
+      margin:24px 0;opacity:.35;
     }
     .divider::before,.divider::after{
-      content:'';flex:1;max-width:60px;height:1px;background:currentColor;
+      content:'';flex:1;max-width:70px;height:1px;
+      background:linear-gradient(90deg,transparent,currentColor,transparent);
     }
     .divider span{
-      font-size:10px;display:inline-block;width:6px;height:6px;
-      background:currentColor;border-radius:50%;opacity:.5;
+      display:inline-block;width:7px;height:7px;
+      background:currentColor;border-radius:50%;opacity:.6;
+      box-shadow:0 0 0 2px currentColor;box-shadow:0 0 0 2px currentColor;
+    }
+    /* ===== ENHANCED DECORATIONS ===== */
+    /* subtle top/bottom decorative lines on pages */
+    .page::before{
+      content:'';position:absolute;top:8%;left:8%;right:8%;
+      height:1px;
+      background:linear-gradient(90deg,transparent 0%,currentColor 20%,currentColor 80%,transparent 100%);
+      opacity:.06;z-index:4;pointer-events:none;
+    }
+    .page::after{
+      content:'';position:absolute;bottom:8%;left:8%;right:8%;
+      height:1px;
+      background:linear-gradient(90deg,transparent 0%,currentColor 20%,currentColor 80%,transparent 100%);
+      opacity:.06;z-index:4;pointer-events:none;
+    }
+    /* card inner glow */
+    .event::before{
+      content:'';position:absolute;inset:-1px;border-radius:inherit;
+      background:linear-gradient(135deg,rgba(210,163,106,.08),transparent 50%);
+      pointer-events:none;z-index:-1;
+    }
+    .event{position:relative}
+    /* decorative dot pattern */
+    .dots-decor{
+      position:absolute;width:60px;height:60px;opacity:.04;pointer-events:none;z-index:1;
+    }
+    .dots-decor::before,.dots-decor::after{
+      content:'';position:absolute;border-radius:50%;background:currentColor;
+    }
+    .dots-decor::before{width:4px;height:4px;top:0;left:0}
+    .dots-decor::after{width:3px;height:3px;bottom:8px;right:8px}
     }
 
     /* ===== RSVP TIMELINE ===== */
@@ -462,10 +495,10 @@
     <!-- ==================== PAGE 1: COVER ==================== -->
     <section class="page bg-dark dark-orn active" data-page="0">
       <div class="ornament"></div>
-      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
-      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
-      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
-      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 46V14C2 7.4 7.4 2 14 2h34" stroke="currentColor" stroke-width="1" fill="none" opacity=".3"/><circle cx="6" cy="6" r="2" fill="currentColor" opacity=".2"/></svg></div>
+      <div class="corner corner-tl"><svg viewBox="0 0 48 48"><path d="M2 44V12C2 6.5 6.5 2 12 2h34" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".35"/><path d="M8 8h10M8 8v10" stroke="currentColor" stroke-width=".8" fill="none" opacity=".2"/><circle cx="6" cy="6" r="1.5" fill="currentColor" opacity=".25"/></svg></div>
+      <div class="corner corner-tr"><svg viewBox="0 0 48 48"><path d="M2 44V12C2 6.5 6.5 2 12 2h34" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".35"/><path d="M8 8h10M8 8v10" stroke="currentColor" stroke-width=".8" fill="none" opacity=".2"/><circle cx="6" cy="6" r="1.5" fill="currentColor" opacity=".25"/></svg></div>
+      <div class="corner corner-bl"><svg viewBox="0 0 48 48"><path d="M2 44V12C2 6.5 6.5 2 12 2h34" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".35"/><path d="M8 8h10M8 8v10" stroke="currentColor" stroke-width=".8" fill="none" opacity=".2"/><circle cx="6" cy="6" r="1.5" fill="currentColor" opacity=".25"/></svg></div>
+      <div class="corner corner-br"><svg viewBox="0 0 48 48"><path d="M2 44V12C2 6.5 6.5 2 12 2h34" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".35"/><path d="M8 8h10M8 8v10" stroke="currentColor" stroke-width=".8" fill="none" opacity=".2"/><circle cx="6" cy="6" r="1.5" fill="currentColor" opacity=".25"/></svg></div>
       <div class="content">
         <div class="logo-wrap invert fade-up" style="width:clamp(200px,55vw,340px)">
           <img src="logos/logo.png" alt="电子科技大学70周年校庆"/>
